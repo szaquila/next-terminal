@@ -7,10 +7,11 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/gorilla/websocket"
 	"next-terminal/server/common/term"
 	"next-terminal/server/dto"
 	"next-terminal/server/global/session"
+
+	"github.com/gorilla/websocket"
 )
 
 type TermHandler struct {
@@ -26,7 +27,7 @@ type TermHandler struct {
 	buf          bytes.Buffer
 }
 
-func NewTermHandler(userId, assetId, sessionId string, isRecording bool, ws *websocket.Conn, nextTerminal *term.NextTerminal) *TermHandler {
+func NewTermHandler(_, _, sessionId string, isRecording bool, ws *websocket.Conn, nextTerminal *term.NextTerminal) *TermHandler {
 	ctx, cancel := context.WithCancel(context.Background())
 	tick := time.NewTicker(time.Millisecond * time.Duration(60))
 
@@ -127,7 +128,7 @@ func (r *TermHandler) SendMessageToWebSocket(msg dto.Message) error {
 func SendObData(sessionId, s string) {
 	nextSession := session.GlobalSessionManager.GetById(sessionId)
 	if nextSession != nil && nextSession.Observer != nil {
-		nextSession.Observer.Range(func(key string, ob *session.Session) {
+		nextSession.Observer.Range(func(_ string, ob *session.Session) {
 			_ = ob.WriteMessage(dto.NewMessage(Data, s))
 		})
 	}

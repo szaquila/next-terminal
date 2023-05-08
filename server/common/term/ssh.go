@@ -49,6 +49,8 @@ func NewSshClient(ip string, port int, username, password, privateKey, passphras
 		Auth:            []ssh.AuthMethod{authMethod},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
+	config.Ciphers = append(config.Ciphers, []string{"aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "arcfour256", "arcfour128", "aes128-cbc", "3des-cbc", "aes192-cbc", "aes256-cbc"}...)
+	config.KeyExchanges = append(config.KeyExchanges, "diffie-hellman-group-exchange-sha1", "diffie-hellman-group-exchange-sha256")
 
 	addr := fmt.Sprintf("%s:%d", ip, port)
 	return ssh.Dial("tcp", addr, config)
@@ -94,6 +96,8 @@ func NewSshClientUseSocks(ip string, port int, username, password, privateKey, p
 		Auth:            []ssh.AuthMethod{authMethod},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
+	config.Ciphers = append(config.Ciphers, []string{"aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "arcfour256", "arcfour128", "aes128-cbc", "3des-cbc", "aes192-cbc", "aes256-cbc"}...)
+	config.KeyExchanges = append(config.KeyExchanges, "diffie-hellman-group-exchange-sha1", "diffie-hellman-group-exchange-sha256")
 
 	socksProxyAddr := fmt.Sprintf("%s:%s", socksProxyHost, socksProxyPort)
 

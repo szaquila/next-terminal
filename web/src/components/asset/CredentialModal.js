@@ -105,6 +105,9 @@ const CredentialModal = ({
                                 <Input placeholder="输入授权账户"/>
                             </Form.Item>
 
+                            <Form.Item label="公钥" name='publicKey' rules={[{required: false, message: '请输入公钥'}]}>
+                                <TextArea rows={4}/>
+                            </Form.Item>
                             <Form.Item label="私钥" name='privateKey' rules={[{required: true, message: '请输入私钥'}]}>
                                 <TextArea rows={4}/>
                             </Form.Item>

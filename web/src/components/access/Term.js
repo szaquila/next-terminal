@@ -20,6 +20,7 @@ import workCommandApi from "../../api/worker/command";
 import {xtermScrollPretty} from "../../utils/xterm-scroll-pretty";
 
 const {Text} = Typography;
+var clipText = '';
 
 const Term = () => {
 
@@ -93,12 +94,25 @@ const Term = () => {
     };
 
     const init = async (assetId) => {
-        let term = new Terminal({
+      let term = new Terminal({
             fontFamily: 'monaco, Consolas, "Lucida Console", monospace',
             fontSize: 15,
             theme: {
                 background: '#1b1b1b'
             },
+        });
+        term.onSelectionChange(() => {
+            if (session['copy'] === '0') {
+                return false;
+            }
+            if (term.hasSelection()){
+                if (navigator.clipboard) {
+                    let clipText = term.getSelection().toString();
+                    navigator.clipboard.writeText(clipText);
+                } else {
+                    document.execCommand('copy');
+                }
+            }
         });
         let elementTerm = document.getElementById('terminal');
         term.open(elementTerm);
@@ -122,12 +136,59 @@ const Term = () => {
 
         term.writeln('trying to connect to the server ...');
 
+        document.body.onmousedown = (event) => {
+            event.preventDefault();
+            if (event.button == 1) {
+                // document.activeElement
+                if (navigator.clipboard) {
+                  // console.log("navigator paste")
+                  navigator.clipboard.readText().then((text) => {
+                    // console.log(clipText);
+                    clipText = text;
+                  })
+                } else {
+                  // console.log("execCommand paste");
+                  // document.execCommand('paste');
+                }
+
+                // console.log('paste');
+                // term.write(clipText);
+                term.paste(clipText);
+            }
+        }
+        // term.attachCustomKeyEventHandler((arg) => {
+        //     if (arg.ctrlKey && arg.code === "KeyC" && arg.type === "keydown") {
+        //         if (term.hasSelection()){
+        //             if (navigator.clipboard) {
+        //                 let clipText = term.getSelection().toString();
+        //                 navigator.clipboard.writeText(clipText);
+        //             } else {
+        //                 document.execCommand('copy');
+        //             }
+        //         }
+        //     } else if (arg.ctrlKey && arg.code === "KeyV" && arg.type === "keydown") {
+        //         if (navigator.clipboard) {
+        //             navigator.clipboard.readText()
+        //               .then(text => {
+        //                 clipText = text;
+        //             })
+        //         } else {
+
+        //         }
+        //         // term.write(clipText);
+        //         term.paste(clipText);
+        //     };
+        //     return true;
+        // });
+
         document.body.oncopy = (event) => {
             event.preventDefault();
             if (session['copy'] === '0') {
                 message.warn('禁止复制')
                 return false;
             } else {
+                clipText = term.getSelection().toString();
+                // console.log('copy', clipText);
                 return true;
             }
         }
@@ -138,7 +199,8 @@ const Term = () => {
                 message.warn('禁止粘贴')
                 return false;
             } else {
-                return true;
+              // console.log('paste', clipText);
+              return true;
             }
         }
 

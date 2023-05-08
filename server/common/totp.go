@@ -1,6 +1,9 @@
 package common
 
 import (
+	"time"
+
+	"github.com/pquerna/otp"
 	otp_t "github.com/pquerna/otp"
 	totp_t "github.com/pquerna/otp/totp"
 )
@@ -15,5 +18,11 @@ func Validate(code string, secret string) bool {
 	if secret == "" {
 		return true
 	}
-	return totp_t.Validate(code, secret)
+	rv, _ := totp_t.ValidateCustom(code, secret, time.Now(), totp_t.ValidateOpts{
+		Period:    180,
+		Skew:      1,
+		Digits:    otp.DigitsSix,
+		Algorithm: otp.AlgorithmSHA1,
+	})
+	return rv
 }

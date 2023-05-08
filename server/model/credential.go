@@ -11,6 +11,7 @@ type Credential struct {
 	Username   string          `gorm:"type:varchar(200)" json:"username"`
 	Password   string          `gorm:"type:varchar(500)" json:"password"`
 	PrivateKey string          `gorm:"type:text" json:"privateKey"`
+	PublicKey  string          `gorm:"type:text" json:"publicKey"`
 	Passphrase string          `gorm:"type:varchar(500)" json:"passphrase"`
 	Created    common.JsonTime `json:"created"`
 	Owner      string          `gorm:"index,type:varchar(36)" json:"owner"`

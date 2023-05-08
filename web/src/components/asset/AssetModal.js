@@ -256,7 +256,9 @@ const AssetModal = function ({
                         <>
                             <Form.Item label="授权凭证" name='credentialId'
                                        rules={[{required: true, message: '请选择授权凭证'}]}>
-                                <Select onChange={() => null}>
+                                <Select allowClear onChange={() => null}>
+                                    <Option value='-1'>OTP关联凭证</Option>
+                                    <Option value='0'>同名关联凭证</Option>
                                     {credentials.map(item => {
                                         return (
                                             <Option key={item.id} value={item.id}>

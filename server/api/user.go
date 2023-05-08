@@ -2,14 +2,19 @@ package api
 
 import (
 	"context"
-	"next-terminal/server/common/maps"
+	"encoding/hex"
+	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"next-terminal/server/common/maps"
 	"next-terminal/server/model"
 	"next-terminal/server/repository"
 	"next-terminal/server/service"
+
+	"github.com/labstack/echo/v4"
+	"github.com/pquerna/otp"
+	"github.com/pquerna/otp/totp"
 )
 
 type UserApi struct{}
@@ -18,6 +23,21 @@ func (userApi UserApi) CreateEndpoint(c echo.Context) (err error) {
 	var item model.User
 	if err := c.Bind(&item); err != nil {
 		return err
+	}
+
+	if item.TOTPSecret != "" && len(item.TOTPSecret) != 32 {
+		if keyStr, err := hex.DecodeString(item.TOTPSecret); err == nil {
+			if key, err := totp.Generate(totp.GenerateOpts{
+				Issuer:      "yjidc.com",
+				AccountName: fmt.Sprintf("%s@yjidc.com", item.Username),
+				Period:      180,
+				Secret:      keyStr,
+				Digits:      otp.DigitsSix,
+				Algorithm:   otp.AlgorithmSHA1,
+			}); err == nil {
+				item.TOTPSecret = key.Secret()
+			}
+		}
 	}
 
 	if err := service.UserService.CreateUser(item); err != nil {
@@ -60,6 +80,21 @@ func (userApi UserApi) UpdateEndpoint(c echo.Context) error {
 	var item model.User
 	if err := c.Bind(&item); err != nil {
 		return err
+	}
+
+	if item.TOTPSecret != "" && len(item.TOTPSecret) != 32 {
+		if keyStr, err := hex.DecodeString(item.TOTPSecret); err == nil {
+			if key, err := totp.Generate(totp.GenerateOpts{
+				Issuer:      "yjidc.com",
+				AccountName: fmt.Sprintf("%s@yjidc.com", item.Username),
+				Period:      180,
+				Secret:      keyStr,
+				Digits:      otp.DigitsSix,
+				Algorithm:   otp.AlgorithmSHA1,
+			}); err == nil {
+				item.TOTPSecret = key.Secret()
+			}
+		}
 	}
 
 	if err := service.UserService.UpdateUser(id, item); err != nil {

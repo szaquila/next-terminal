@@ -60,6 +60,11 @@ func (r credentialRepository) FindById(c context.Context, id string) (o model.Cr
 	return
 }
 
+func (r credentialRepository) FindByName(c context.Context, name string) (o model.Credential, err error) {
+	err = r.GetDB(c).Where("name = ?", name).First(&o).Error
+	return
+}
+
 func (r credentialRepository) UpdateById(c context.Context, o *model.Credential, id string) error {
 	o.ID = id
 	return r.GetDB(c).Updates(o).Error

@@ -93,9 +93,7 @@ const UserModal = ({visible, handleOk, handleCancel, confirmLoading, id}) => {
                     </Form.Item>
                 }
 
-
-                <Form.Item label="邮箱" name="mail"
-                           rules={[{required: false, type: "email", message: '请输入正确的邮箱'}]}>
+                <Form.Item label="邮箱" name="mail" rules={[{required: false, type: "email", message: '请输入正确的邮箱'}]}>
                     <Input type='email' placeholder="请输入邮箱"/>
                 </Form.Item>
 
@@ -106,6 +104,10 @@ const UserModal = ({visible, handleOk, handleCancel, confirmLoading, id}) => {
                             <Input type="password" autoComplete="new-password" placeholder="输入登录密码"/>
                         </Form.Item>) : null
                 }
+
+                <Form.Item label="双因素认证" name="totpSecret" rules={[{required: false,  message: '请输入双因素认证'}]}>
+                      <Input minLength={32}  maxLength={40} placeholder="请输入双因素认证"/>
+                </Form.Item>
             </Form>
         </Modal>
     )

@@ -81,8 +81,8 @@ func (r userRepository) Find(c context.Context, pageIndex, pageSize int, usernam
 	for i := 0; i < len(o); i++ {
 		if o[i].TOTPSecret == "" || o[i].TOTPSecret == "-" {
 			o[i].TOTPSecret = "0"
-		} else {
-			o[i].TOTPSecret = "1"
+			// } else {
+			// 	o[i].TOTPSecret = "1"
 		}
 	}
 	return

@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"next-terminal/server/common/nt"
 	"os"
 	"path"
 	"strconv"
 	"sync"
+	"time"
 
 	"next-terminal/server/common"
 	"next-terminal/server/common/guacamole"
@@ -20,6 +22,8 @@ import (
 	"next-terminal/server/repository"
 	"next-terminal/server/utils"
 
+	"github.com/pquerna/otp"
+	"github.com/pquerna/otp/totp"
 	"gorm.io/gorm"
 )
 
@@ -348,20 +352,51 @@ func (service sessionService) Create(clientIp, assetId, mode string, user *model
 	}
 
 	if asset.AccountType == "credential" {
-		credential, err := repository.CredentialRepository.FindById(context.TODO(), asset.CredentialId)
-		if err != nil {
-			return nil, err
-		}
+		// 如果凭证为空，则尝试读取用户同名凭证
+		var credential model.Credential
+		if asset.CredentialId != "" {
+			switch asset.CredentialId {
+			case "-1":
+				if user.TOTPSecret != "" {
+					s.Username = user.Username
+					password, err := totp.GenerateCodeCustom(user.TOTPSecret, time.Now(), totp.ValidateOpts{
+						Period:    180,
+						Skew:      1,
+						Digits:    otp.DigitsSix,
+						Algorithm: otp.AlgorithmSHA1,
+					})
+					if err != nil {
+						return nil, err
+					}
+					encryptedCBC, err := utils.AesEncryptCBC([]byte(password), config.GlobalCfg.EncryptionPassword)
+					if err != nil {
+						return nil, err
+					}
+					s.Password = base64.StdEncoding.EncodeToString(encryptedCBC)
+				}
+			case "0":
+				credential, err = repository.CredentialRepository.FindByName(context.TODO(), user.Username)
+				fallthrough
+			default:
+				if asset.CredentialId != "0" {
+					credential, err = repository.CredentialRepository.FindById(context.TODO(), asset.CredentialId)
+				}
+				if err != nil {
+					return nil, err
+				}
 
-		if credential.Type == nt.Custom {
-			s.Username = credential.Username
-			s.Password = credential.Password
-		} else {
-			s.Username = credential.Username
-			s.PrivateKey = credential.PrivateKey
-			s.Passphrase = credential.Passphrase
+				if credential.Type == nt.Custom {
+					s.Username = credential.Username
+					s.Password = credential.Password
+				} else {
+					s.Username = credential.Username
+					s.PrivateKey = credential.PrivateKey
+					s.Passphrase = credential.Passphrase
+				}
+			}
 		}
 	}
+	fmt.Printf("session: %v\n", s)
 
 	if err := repository.SessionRepository.Create(context.TODO(), s); err != nil {
 		return nil, err

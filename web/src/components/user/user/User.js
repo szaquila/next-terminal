@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 
-import {Button, Input, Layout, message, Modal, Popconfirm, Switch, Table} from "antd";
+import {Button, Input, Layout, message, Modal, Popconfirm, Popover, Switch, Table} from "antd";
+import QRCode from "qrcode.react";
 import UserModal from "./UserModal";
 import {Link, useNavigate} from "react-router-dom";
 import {ProTable, TableDropdown} from "@ant-design/pro-components";
@@ -49,7 +50,22 @@ const User = () => {
             dataIndex: 'username',
             key: 'username',
             sorter: true,
-        }, {
+            render: (text, record) => {
+                if (record['totpSecret'] == '0') {
+                    return <div>{text}</div>
+                }
+
+                let src = `otpauth://totp/yjidc.com:${record['username']}@yjidc.com?algorithm=SHA1&digits=6&issuser=yjidc.com&period=180&secret=${record['totpSecret']}`;
+                return <Popover
+                    overlayInnerStyle={{
+                        padding: 0
+                    }}
+                    content={<QRCode value={src} bordered={false} />}
+                >
+                    <div>{text}</div>
+                </Popover>
+          }
+      }, {
             title: '邮箱',
             dataIndex: 'mail',
             key: 'mail',
