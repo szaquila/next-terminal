@@ -243,7 +243,7 @@ const User = () => {
                 labelWidth: 'auto',
             }}
             pagination={{
-                defaultPageSize: 10,
+                defaultPageSize: 20,
             }}
             dateFormatter="string"
             headerTitle="用户列表"

@@ -442,7 +442,7 @@ const Asset = () => {
                 labelWidth: 'auto',
             }}
             pagination={{
-                defaultPageSize: 10,
+                defaultPageSize: 20,
                 showSizeChanger: true
             }}
             dateFormatter="string"

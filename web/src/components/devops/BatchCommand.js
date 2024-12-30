@@ -190,7 +190,7 @@ const BatchCommand = () => {
                 labelWidth: 'auto',
             }}
             pagination={{
-                pageSize: 5,
+                pageSize: 10,
             }}
             dateFormatter="string"
             headerTitle="资产列表"

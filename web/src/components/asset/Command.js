@@ -147,7 +147,7 @@ const Command = () => {
                 labelWidth: 'auto',
             }}
             pagination={{
-                defaultPageSize: 10,
+                defaultPageSize: 20,
             }}
             dateFormatter="string"
             headerTitle="动态指令列表"

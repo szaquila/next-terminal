@@ -130,7 +130,7 @@ const LoginPolicy = () => {
                         labelWidth: 'auto',
                     }}
                     pagination={{
-                        pageSize: 10,
+                        pageSize: 30,
                     }}
                     dateFormatter="string"
                     headerTitle="用户登录策略"

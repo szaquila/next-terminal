@@ -16,6 +16,7 @@ echo "build web success"
 echo "build api..."
 cd ..
 go env;CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags '-s -w' -o next-terminal main.go
+# CC=x86_64-linux-musl-gcc go build -tags libsqlite3 -tags musl -ldflags '-linkmode external -extldflags "-static" -s -w' -o next-terminal main.go
 upx next-terminal
 
 rm -rf server/resource/build

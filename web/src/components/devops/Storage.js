@@ -161,7 +161,7 @@ const Storage = () => {
                         labelWidth: 'auto',
                     }}
                     pagination={{
-                        pageSize: 10,
+                        pageSize: 30,
                     }}
                     dateFormatter="string"
                     headerTitle="磁盘空间列表"

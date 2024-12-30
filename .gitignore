@@ -29,4 +29,5 @@ web/build
 /server/resource/*.json
 /server/resource/*.ico
 server/resource/build
+web.tar.bz2
 next-terminal

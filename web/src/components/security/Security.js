@@ -127,7 +127,7 @@ const Security = () => {
                         labelWidth: 'auto',
                     }}
                     pagination={{
-                        pageSize: 10,
+                        pageSize: 30,
                     }}
                     dateFormatter="string"
                     headerTitle="访问规则列表"

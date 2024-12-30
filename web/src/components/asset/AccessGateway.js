@@ -159,7 +159,7 @@ const AccessGateway = () => {
                 labelWidth: 'auto',
             }}
             pagination={{
-                defaultPageSize: 10,
+                defaultPageSize: 20,
             }}
             dateFormatter="string"
             headerTitle="接入网关列表"

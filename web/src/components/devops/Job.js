@@ -219,7 +219,7 @@ const Job = () => {
                         labelWidth: 'auto',
                     }}
                     pagination={{
-                        defaultPageSize: 10,
+                        defaultPageSize: 20,
                     }}
                     dateFormatter="string"
                     headerTitle="计划任务列表"

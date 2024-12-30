@@ -159,7 +159,7 @@ const LoginLog = () => {
                         labelWidth: 'auto',
                     }}
                     pagination={{
-                        pageSize: 10,
+                        pageSize: 30,
                     }}
                     dateFormatter="string"
                     headerTitle="登录日志列表"

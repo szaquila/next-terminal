@@ -172,7 +172,7 @@ const OnlineSession = () => {
                 labelWidth: 'auto',
             }}
             pagination={{
-                defaultPageSize: 10,
+                defaultPageSize: 20,
             }}
             dateFormatter="string"
             headerTitle="在线会话列表"
